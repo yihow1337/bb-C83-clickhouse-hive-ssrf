@@ -1,0 +1,3 @@
+Received exception from server (version 26.10.2):
+Code: 1001. DB::Exception: Received from localhost:19001. DB::Exception: apache::thrift::transport::TTransportException: connect() failed: Connection refused. (STD_EXCEPTION)
+(query: CREATE DATABASE ssrf_empty ENGINE = DataLakeCatalog('thrift://127.0.0.1:1') SETTINGS catalog_type='hive', warehouse='w';)

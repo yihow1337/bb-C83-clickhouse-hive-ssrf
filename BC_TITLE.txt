@@ -1,0 +1,1 @@
+ClickHouse: DataLakeCatalog Hive metastore ignores remote_url_allow_hosts (SSRF)

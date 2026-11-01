@@ -1,0 +1,16 @@
+=== NEG: url() to 127.0.0.1 ===
+Received exception from server (version 26.10.2):
+Code: 491. DB::Exception: Received from localhost:19000. DB::Exception: URL "http://127.0.0.1:9/x" is not allowed in configuration file, see <remote_url_allow_hosts>. (UNACCEPTABLE_URL)
+(query: SELECT * FROM url('http://127.0.0.1:9/x','CSV','a String'))
+=== EXPLOIT: Hive DataLakeCatalog to 127.0.0.1:19083 (NOT in allowlist) ===
+INFORMATION_SCHEMA
+default
+information_schema
+ssrf_hive
+system
+LISTEN 127.0.0.1:19083
+ACCEPT from ('127.0.0.1', 56824)
+=== Empty allowlist: expect Connection refused (filter NOT applied); fixed expects UNACCEPTABLE_URL ===
+Received exception from server (version 26.10.2):
+Code: 1001. DB::Exception: Received from localhost:19001. DB::Exception: apache::thrift::transport::TTransportException: connect() failed: Connection refused. (STD_EXCEPTION)
+(query: CREATE DATABASE ssrf_empty ENGINE = DataLakeCatalog('thrift://127.0.0.1:1') SETTINGS catalog_type='hive', warehouse='w';)

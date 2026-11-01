@@ -1,0 +1,47 @@
+--- /workspace/bounty-research/poc/r23-clickhouse-hive-ssrf/src_vuln/HiveCatalog.cpp	2026-11-02 02:34:34.027966141 +0800
++++ /workspace/bounty-research/poc/r23-clickhouse-hive-ssrf/src_fix/HiveCatalog.cpp	2026-11-02 02:34:35.299966141 +0800
+@@ -10,8 +10,10 @@
+ #include <IO/S3/Client.h>
+ #include <IO/S3/Credentials.h>
+ #include <IO/S3Settings.h>
++#include <Interpreters/Context.h>
+ #include <Storages/ObjectStorage/DataLakes/Iceberg/SchemaProcessor.h>
+ #include <Common/ProxyConfigurationResolverProvider.h>
++#include <Common/RemoteHostFilter.h>
+ #include <Databases/DataLake/Common.h>
+ #include <Common/FailPoint.h>
+ 
+@@ -74,8 +76,9 @@
+ 
+ }
+ 
+-HiveCatalog::HiveCatalog(const std::string & warehouse_, const std::string & base_url_, DB::ContextPtr)
++HiveCatalog::HiveCatalog(const std::string & warehouse_, const std::string & base_url_, DB::ContextPtr context_)
+     : ICatalog(warehouse_)
++    , DB::WithContext(context_)
+     , base_url(base_url_)
+ {
+     std::lock_guard lock(client_mutex);
+@@ -98,6 +101,10 @@
+ 
+     auto [host, port] = parseHostPort(base_url);
+ 
++    /// Also rejects control characters such as NUL, which `getaddrinfo` would truncate the host at.
++    getContext()->getRemoteHostFilter().checkAndGetCanonicalHostAndPort(
++        host + ":" + std::to_string(port), static_cast<UInt16>(port), "Hive metastore address");
++
+     socket = std::make_shared<apache::thrift::transport::TSocket>(host, port);
+     transport = std::make_shared<apache::thrift::transport::TBufferedTransport>(socket);
+     protocol = std::make_shared<apache::thrift::protocol::TBinaryProtocol>(transport);
+@@ -129,6 +136,11 @@
+             {
+                 reconnectUnlocked();
+             }
++            catch (const DB::Exception &)
++            {
++                /// Non-transient (e.g. `UNACCEPTABLE_URL` from `remote_url_allow_hosts`), retrying cannot help.
++                throw;
++            }
+             catch (const std::exception & ex)
+             {
+                 LOG_TRACE(

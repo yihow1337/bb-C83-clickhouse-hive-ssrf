@@ -1,0 +1,6 @@
+[NEG] url() to 127.0.0.1 must be UNACCEPTABLE_URL
+  OK: allowlist enforced for url()
+[EXP] CREATE DataLakeCatalog Hive thrift://127.0.0.1:53445 (host NOT in allowlist)
+ssrf_hive
+[EXP] listener accept: ('127.0.0.1', 36180)
+PASS: TCP connect reached listener despite remote_url_allow_hosts

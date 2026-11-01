@@ -1,0 +1,11 @@
+<clickhouse>
+  <logger><level>error</level><console>1</console></logger>
+  <http_port>18124</http_port>
+  <tcp_port>19001</tcp_port>
+  <path>/tmp/ch-r23-poc/data2/</path>
+  <tmp_path>/tmp/ch-r23-poc/tmp2/</tmp_path>
+  <user_files_path>/tmp/ch-r23-poc/user_files/</user_files_path>
+  <format_schema_path>/tmp/ch-r23-poc/format_schemas/</format_schema_path>
+  <user_directories><users_xml><path>/tmp/ch-r23-poc/users.xml</path></users_xml></user_directories>
+  <remote_url_allow_hosts></remote_url_allow_hosts>
+</clickhouse>

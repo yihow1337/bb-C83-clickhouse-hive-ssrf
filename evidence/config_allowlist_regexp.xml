@@ -1,0 +1,14 @@
+<clickhouse>
+  <logger><level>error</level><console>1</console></logger>
+  <http_port>18123</http_port>
+  <tcp_port>19000</tcp_port>
+  <path>/tmp/ch-r23-poc/data/</path>
+  <tmp_path>/tmp/ch-r23-poc/tmp/</tmp_path>
+  <user_files_path>/tmp/ch-r23-poc/user_files/</user_files_path>
+  <format_schema_path>/tmp/ch-r23-poc/format_schemas/</format_schema_path>
+  <user_directories><users_xml><path>/tmp/ch-r23-poc/users.xml</path></users_xml></user_directories>
+  <!-- Non-empty allowlist: ONLY *.allowed.example. 127.0.0.1 must be denied if filter is enforced. -->
+  <remote_url_allow_hosts>
+    <host_regexp>.*\.allowed\.example</host_regexp>
+  </remote_url_allow_hosts>
+</clickhouse>
